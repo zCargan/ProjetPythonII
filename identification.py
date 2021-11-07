@@ -21,7 +21,7 @@ def complete_password(dic):
     :return: nothing
     """
     try:
-        with open('Classeur1.csv') as file:
+        with open('data.csv') as file:
             file_password = csv.reader(file, delimiter=";")
             for line in file_password:
                 key = line[0]
@@ -52,10 +52,10 @@ def identification(dic):
         if dic[user][0] == password:
             if dic[user][1] == "X":
                 print("Successful authentication, u are admin too")
-                print("Musique : Allowed \nLogiciel : Allowed \nMeteo : Allowed \ngestion_acces : Allowed")
+                print("Music : Allowed \nSoftware : Allowed \nweather_report : Allowed \naccess_management : Allowed")
             else:
                 print("Successful authentication, u are a simple user")
-                print("Musique : Allowed \nLogiciel : Allowed \nMeteo : Allowed \ngestion_acces : Denied")
+                print("Music: Allowed \nSoftware : Allowed \nweather_report : Allowed \naccess_management : Denied")
         else:
             print("incorrect password")
     else:
@@ -73,7 +73,7 @@ def define_privileges(list):
     :return: nothing
     """
     for i in range(2, len(list)):
-        # print(list[i]) // récupère les privilège
+        # print(list[i]) // take the privileges
         all_privileges.append(all_titles[i])
 
 
@@ -81,4 +81,3 @@ define_privileges(all_titles)
 
 complete_password(dic_password)
 identification(dic_password)
-
