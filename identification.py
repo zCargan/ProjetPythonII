@@ -15,6 +15,11 @@ all_privileges = []  # contains all the privileges allowed for the discord
 
 
 def complete_password(dic):
+    """
+    complete the dictionary with all the user's information
+    :param dic: take a dictionary
+    :return: nothing
+    """
     try:
         with open('Classeur1.csv') as file:
             file_password = csv.reader(file, delimiter=";")
@@ -36,6 +41,11 @@ def complete_password(dic):
 
 
 def identification(dic):
+    """
+    if the user is known and the password is correct, the user is identified with all his privileges
+    :param dic: takes the dictionary with all users and their information
+    :return: nothing
+    """
     user = input("What is your username?")
     if user in dic:
         password = input("What is your password?")
@@ -57,13 +67,18 @@ def identification(dic):
 
 
 def define_privileges(list):
+    """
+    create a new table with all the privileges of the discord
+    :param list: takes the first line of data file
+    :return: nothing
+    """
     for i in range(2, len(list)):
         # print(list[i]) // récupère les privilège
         all_privileges.append(all_titles[i])
 
 
+define_privileges(all_titles)
+
 complete_password(dic_password)
 identification(dic_password)
-define_privileges(all_titles)
-print(dic_password)
 
