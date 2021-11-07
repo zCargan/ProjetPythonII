@@ -34,14 +34,17 @@ def complete_password(dic):
 
 def identification(dic):
     user = input("What is your username?")
-    password = input("What is your password?")
-
-    if user not in dic:
-        print("user not found")
-    elif dic[user][0] != password:
-        print("incorrect password")
+    if user in dic:
+        password = input("What is your password?")
+        if dic[user][0] == password:
+            if dic[user][1] == "X":
+                print("Successful authentication, u are admin too")
+            else:
+                print("Successful authentication, u are a simple user")
+        else:
+            print("incorrect password")
     else:
-        print("Successful authentication")
+        print("user not found")
 
 
 complete_password(dic_password)
