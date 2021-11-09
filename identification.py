@@ -36,22 +36,18 @@ def identification_user(dic, user, password):
     if the user is known and the password is correct, the user is identified with all his privileges
     :param dic: takes the dictionary with all users and their information
     :return:
-    return 2 if the user is a admin
-    return 1 if the user is a guest
-    return 0 if the user is not found
-    return -1 if the password is incorrect
+    return 2 if the user is connected
+    return 1 if the username is correct, but not the password
+    return 0 if the username is incorrect
 
     """
     if user in dic:
-        if dic[user][0] == password:
-            if dic[user][1].upper() == "X":
-                return 2
-            else:
-                return 1
+        if dic[user][5] == password:
+            return 2
         else:
-            return -1
+            return 1  # password incorrect
     else:
-        return 0
+        return 0  # user not found
 
 
 def define_privileges(list):
@@ -83,7 +79,3 @@ if __name__ == "__main__":
         message = "Error"
     print(message)
 
-    # define_privileges(all_titles)
-    #
-    #
-    # identification_user(dic_password)
