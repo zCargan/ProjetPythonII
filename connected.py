@@ -1,25 +1,16 @@
-from identification import identification_user
-
-
-def connected(dic, user, password):
+def connected_user(value_of_return):
     """
-    return a message about the connection or not for the user, and the eventually error
-    :param dic: take a dictionary with the ensemble of users and password
-    :param user: take the username introduced by the user
-    :param password: take the password introduced by the user
-    :return: nothing
+    this function is linked with 'identification.py'. Depending on the answer about identification.py, the return value of this function changes
+    :param value_of_return: the value of the return. She determined if the user is log or not
+    :return:
+    return 2 if the user and the password is corrects
+    return 1 if the user is correct but not the password
+    return 0 if the user is unknown
     """
-    message = ""
-    if identification_user(dic, user, password) == 2:
-        message = "Successful authentication, u are admin!"
-#"\nMusic : Allowed \nSoftware : Allowed \nweather_report : Allowed \naccess_management : Allowed"
-    elif identification_user(dic, user, password) == 1:
-        message = "Successful authentication, u are a guest"
-#"\nMusic: Allowed \nSoftware : Allowed \nweather_report : Allowed \naccess_management : Denied"
-    elif identification_user(dic, user, password) == -1:
-        message = "incorrect password"
-    elif identification_user(dic, user, password) == 0:
-        message = "user not found"
-    else:
-        message = "Error"
+    if value_of_return == 2:
+        message = "U are connected"
+    if value_of_return == 1:
+        message = "User or password incorrect"
+    if value_of_return == 0:
+        message = "User or password incorrect"
     return message
