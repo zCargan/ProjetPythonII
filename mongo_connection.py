@@ -33,23 +33,35 @@ def number_user(dic):
 def user_already_know(user):
     """
     :param user: a user
-    :return: True if the user is already in the database
+    :return: False if the user is already not in the database
     """
     dic_user = data_mongo()
     return user in dic_user
 
 
-def email_already_know(email):
+def email_ok(email):
     """
     :param email: receive a email from the  new user
-    :return: True if this email is available
+    :return: False if this email is available
     """
-    available = True
+    in_dic = False
+    email_incorrect = True
+    number_at = 0
     dic_user = data_mongo()
     for key, value in dic_user.items():
         if value[4] == email:
-            available = False
-    return not available
+            in_dic = True
+    for i in range(0, len(email)):
+        if email[i] == "@":
+            number_at += 1
+    if number_at == 1:
+        email_incorrect = False
+
+    if in_dic == False and email_incorrect == False:
+        return False
+    else:
+        return True
+
 
 
 def same_password(password, password_confirm):
@@ -80,11 +92,20 @@ def is_strong_password(password):
     return digit and letter
 
 
-def create_data_to_db(username, first_name, last_name, email, password, password_confirmed):
+def create_data_to_db(username, email, password, choise_question, answer_secret_question):
+    """
+    encode the user's datas into the databse
+    :param username: username from the user
+    :param email: email from the user
+    :param password: password from the user
+    :param choise_question: secret from the user
+    :param answer_secret_question: answer from the user
+    :return: /
+    """
     dic_user = data_mongo()
     id = number_user(dic_user)
-    data = {"_id": id, "username": username, "first_name": first_name, "last_name": last_name, "email": email,
-            "password": password, "password_confirmation": password_confirmed}
+    data = {"_id": id, "username": username, "email": email,
+            "password": password, "secret_choice": choise_question,
+            "secret_answer": answer_secret_question}
     collection.insert_one(data)
-
 

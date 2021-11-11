@@ -34,6 +34,13 @@ def complete_password(dic):
 def identification_user(dic, user, password):
     """
     if the user is known and the password is correct, the user is identified with all his privileges
+    the index of thing:
+    [0] : id of the user
+    [1] : username
+    [2] : password
+    [3] : secret question
+    [4] : answer of this secret question
+
     :param dic: takes the dictionary with all users and their information
     :return:
     return 2 if the user is connected
@@ -42,7 +49,7 @@ def identification_user(dic, user, password):
 
     """
     if user in dic:
-        if dic[user][5] == password:
+        if dic[user][3] == password:
             return 2
         else:
             return 1  # password incorrect
