@@ -3,8 +3,8 @@ from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
-
-from mongo_connection import data_mongo
+from mongo_connection import defined_id_user, change_password_user, is_strong_password
+from mongo_connection import data_mongo, check_hashed
 
 
 class BoxPasswordForgot(BoxLayout):
@@ -12,6 +12,7 @@ class BoxPasswordForgot(BoxLayout):
         self.title = "Password Forgot"
         self.orientation = "vertical"
         self.black_space()
+        self.label_title()
         self.username_label()
         self.input_username_know()
         self.black_space()
@@ -23,6 +24,15 @@ class BoxPasswordForgot(BoxLayout):
         self.black_space()
         self.button_check_answer()
         self.black_space()
+        self.change_password_button()
+        self.black_space()
+
+    # ----------------------------------------------------------- Title -----------------------------------------------------------#
+
+    def label_title(self):
+        self.title = Label(text="Password forget?", size_hint=(.2, .1), pos_hint={'x': 0.4},
+                           color=[0.59, 0.239, 0.89, 1], font_size=40)
+        self.add_widget(self.title)
 
     # ----------------------------------------------------------- Username -----------------------------------------------------------#
 
@@ -32,7 +42,7 @@ class BoxPasswordForgot(BoxLayout):
 
     def input_username_know(self):
         self.username = TextInput(text="",
-                                  size_hint=(0.24, .06), pos_hint={'x': 0.38, 'y': 0.1}, halign="center")
+                                  size_hint=(0.24, .07), pos_hint={'x': 0.38, 'y': 0.1}, halign="center")
         self.add_widget(self.username)
 
     def button_search_question(self):
@@ -46,7 +56,7 @@ class BoxPasswordForgot(BoxLayout):
 
     def label_question(self):
         self.secret_question = Label(text='This is your secret question', size_hint=(0.24, 0.05),
-                                     pos_hint={'x': 0.38, 'y': 0.1}, color=[0.59, 0.239, 0.89, 1], font_size=30)
+                                     pos_hint={'x': 0.38, 'y': 0.1}, color=[0.59, 0.239, 0.89, 1], font_size=20)
         self.add_widget(self.secret_question)
 
     # ----------------------------------------------------------- secret response -----------------------------------------------------------#
@@ -56,7 +66,7 @@ class BoxPasswordForgot(BoxLayout):
         self.add_widget(self.message_response)
 
     def input_answer(self):
-        self.input_answer = TextInput(text="", size_hint=(0.24, 0.05), pos_hint={'x': 0.38, 'y': 0.1}, halign="center")
+        self.input_answer = TextInput(text="", size_hint=(0.24, 0.07), pos_hint={'x': 0.38, 'y': 0.1}, halign="center")
         self.add_widget(self.input_answer)
 
     def button_check_answer(self):
@@ -64,6 +74,15 @@ class BoxPasswordForgot(BoxLayout):
                                    pos_hint={'x': 0.38}, color=[1, 1, 1, 1], background_color=[0.59, 0.239, 0.89, 1])
         self.button_check.bind(on_press=self.check_user_informations)
         self.add_widget(self.button_check)
+
+    # ----------------------------------------------------------- Change Password -----------------------------------------------------------#
+
+    def change_password_button(self):
+        self.button_new_password = Button(text="change my password", size_hint=(.24, .06),
+                                          pos_hint={'x': 0.38}, color=[1, 1, 1, 1],
+                                          background_color=[0.59, 0.239, 0.89, 1])
+        self.button_new_password.bind(on_press=self.change_password_user)
+        self.add_widget(self.button_new_password)
 
     # ----------------------------------------------------------- Space Graphic -----------------------------------------------------------#
 
@@ -93,12 +112,32 @@ class BoxPasswordForgot(BoxLayout):
         """
         dic_user = data_mongo()
         username_give = self.username.text
-        answer_give = self.input_answer.text
-        good_answer = dic_user[username_give][5]
-        if answer_give == good_answer:
-            self.secret_question.text = "Correct! Your password is : " + dic_user[username_give][3]
+        answer_give = self.input_answer.text.upper()
+        answed_crypted = bytes(answer_give, encoding="utf-8")
+        if username_give not in dic_user:
+            self.secret_question.text = "User not found"
         else:
-            self.secret_question.text = "Incorrect answer"
+            if check_hashed(answed_crypted, dic_user[username_give][5]):
+                self.message_response.text = "Correct! Enter your new password"
+                self.input_answer.text = ""
+            else:
+                self.message_response.text = "Incorrect answer"
+
+    def change_password_user(self, instance):
+        """
+        change the password of the user into the database
+        :param instance: /
+        :return: /
+        """
+        username = self.username.text
+        password = self.input_answer.text
+        if is_strong_password(password):
+            change_password_user(username, password)
+            self.secret_question.text = ""
+            self.message_response.text = ""
+            self.title.text = "Password changed!"
+        else:
+            self.secret_question.text = "The password need to have  minimum 8 caracteres, a digit and a letter"
 
 
 class PasswordForgot(App):

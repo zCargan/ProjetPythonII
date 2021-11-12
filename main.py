@@ -3,10 +3,8 @@ from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
-from connected import connected_user
-from identification import identification_user
+from function import identification_user, connected_user
 from mongo_connection import data_mongo
-
 
 class BoxIdentification(BoxLayout):
     def build(self):
@@ -101,6 +99,8 @@ class BoxIdentification(BoxLayout):
         password = self.input_password.text
         self.identification_message.text = connected_user(identification_user(data_mongo(), user, password))
         self.identification_message.color = [0, 1, 0, 1]
+
+
 
     def password_forget(self):
         pass

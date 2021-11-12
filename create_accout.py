@@ -5,13 +5,14 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.spinner import Spinner
 from mongo_connection import data_mongo, user_already_know, email_ok, same_password, is_strong_password, \
-    number_user, collection, create_data_to_db
+    number_user, collection, create_data_to_db, secret_question_ok
 
 
 class CreateUserFunction(BoxLayout):
     def build(self):
         self.orientation = "vertical"
         self.color = [0,0,1,1]
+        self.black_space()
         self.label_creation()
         self.username_label()
         self.input_username()
@@ -28,10 +29,11 @@ class CreateUserFunction(BoxLayout):
         self.input_secret_answers()
         self.black_space()
         self.confirm_account_creation()
+        self.black_space()
 
     def label_creation(self):
         self.creation_message = Label(text="Create your account", color=[0.59,0.239,0.89,1], size_hint=(.2, .2),
-                                      pos_hint={'x': .4, 'y': 2}, font_size = 30)
+                                      pos_hint={'x': .4, 'y': 2}, font_size = 25)
         self.add_widget(self.creation_message)
 
     # ----------------------------------------------------------- Username -----------------------------------------------------------#
@@ -41,7 +43,7 @@ class CreateUserFunction(BoxLayout):
         self.add_widget(self.message_username)
 
     def input_username(self):
-        self.username_input = TextInput(text="", font_size=20, size_hint=(.4, .15),
+        self.username_input = TextInput(text="", font_size=20, size_hint=(.4, .17),
                                         pos_hint={'x': 0.30, 'y': 2}, halign="center")
         self.add_widget(self.username_input)
 
@@ -52,7 +54,7 @@ class CreateUserFunction(BoxLayout):
         self.add_widget(self.message_email)
 
     def input_email(self):
-        self.email_input = TextInput(text="", font_size=20, size_hint=(.4, .15),
+        self.email_input = TextInput(text="", font_size=20, size_hint=(.4, .17),
                                      pos_hint={'x': 0.30}, halign="center")
         self.add_widget(self.email_input)
 
@@ -63,7 +65,7 @@ class CreateUserFunction(BoxLayout):
         self.add_widget(self.message_password)
 
     def input_password(self):
-        self.password_input = TextInput(text="", font_size=20, size_hint=(.4, .15),
+        self.password_input = TextInput(text="", font_size=20, size_hint=(.4, .17),
                                         pos_hint={'x': 0.30}, halign="center")
         self.add_widget(self.password_input)
 
@@ -72,7 +74,7 @@ class CreateUserFunction(BoxLayout):
         self.add_widget(self.message_password_confirm)
 
     def input_password_confirm(self):
-        self.password_confirm_input = TextInput(text="", font_size=20, size_hint=(.4, .15),
+        self.password_confirm_input = TextInput(text="", font_size=20, size_hint=(.4, .17),
                                                 pos_hint={'x': 0.30}, halign="center")
         self.add_widget(self.password_confirm_input)
 
@@ -81,7 +83,7 @@ class CreateUserFunction(BoxLayout):
     def list_option_password_forget(self):
         self.option_list = Spinner(text="Choose your question",
                                    values=("Your first pet's name", "your basics school", "your mother's name"),
-                                   size_hint=(0.4, .15), pos_hint={'x': 0.3, 'y': 0.8}, background_color=[0.59,0.239,0.89,1])
+                                   size_hint=(0.4, .17), pos_hint={'x': 0.3, 'y': 0.8}, background_color=[0.59,0.239,0.89,1])
         self.add_widget(self.option_list)
 
     # ----------------------------------------------------------- Secret Answer -----------------------------------------------------------#
@@ -92,7 +94,7 @@ class CreateUserFunction(BoxLayout):
 
     def input_secret_answers(self):
         self.secret_answer = TextInput(text="",
-                                       size_hint=(0.4, .15), pos_hint={'x': 0.3, 'y': 0.8}, font_size=20, halign="center")
+                                       size_hint=(0.4, .17), pos_hint={'x': 0.3, 'y': 0.8}, font_size=20, halign="center")
         self.add_widget(self.secret_answer)
 
     # ----------------------------------------------------------- Button -----------------------------------------------------------#
@@ -122,22 +124,25 @@ class CreateUserFunction(BoxLayout):
         password = self.password_input.text
         password_confirmed = self.password_confirm_input.text
         choice_question = self.option_list.text
-        answer_secret_question = self.secret_answer.text
+        answer_secret_question = self.secret_answer.text.upper()
         if user_already_know(username):
             self.creation_message.text = ("this username is already taken")
         else:
             if email_ok(email):
-                self.creation_message.text = ("This email address is not correct, or already use")
-            else:
                 if same_password(password, password_confirmed):
                     if is_strong_password(password):
-                        create_data_to_db(username, email, password, choice_question, answer_secret_question)
-                        self.creation_message.text = ("Register!")
+                        if secret_question_ok(choice_question, answer_secret_question):
+                            create_data_to_db(username, email, password, choice_question, answer_secret_question)
+                            self.creation_message.text = ("Welcome " + username + " !")
+                        else:
+                            self.creation_message.text = ("You need to choose a question and answer it")
                     else:
                         self.creation_message.text = (
-                            "The password need to have minimum 8 caracteres, a digit and a letter")
+                            "The password need to have  minimum 8 caracteres, a digit and a letter")
                 else:
-                    self.creation_message.text = ("The two password isnt the same")
+                    self.creation_message.text = ("The two password is not the same")
+            else:
+                self.creation_message.text = ("This email address is not correct, or already use")
 
 
 class CreateAccount(App):

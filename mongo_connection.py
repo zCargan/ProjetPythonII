@@ -1,3 +1,4 @@
+import bcrypt
 from pymongo import MongoClient
 
 cluster = MongoClient(
@@ -58,10 +59,9 @@ def email_ok(email):
         email_incorrect = False
 
     if in_dic == False and email_incorrect == False:
-        return False
-    else:
         return True
-
+    else:
+        return False
 
 
 def same_password(password, password_confirm):
@@ -92,6 +92,68 @@ def is_strong_password(password):
     return digit and letter
 
 
+def secret_question_ok(question, response):
+    """
+    :param question: the secret question choose by the user
+    :param response: the reponse of this question
+    :return: True if the user choose one of the question and write an answer
+    """
+    return ((question != "Choose your question") and (response != ""))
+
+
+def hashed_password(password):
+    """
+    :param password: a password to crypt
+    :return: the password crypted
+    """
+    password_in_bytes = bytes(password, encoding="utf-8")
+    password_crypted = bcrypt.hashpw(password_in_bytes, bcrypt.gensalt())
+    return password_crypted
+
+
+def check_hashed(password_from_database, password_crypted):
+    return bcrypt.checkpw(password_from_database, password_crypted)
+
+
+def defined_id_user():
+    """
+    define the id of the new user
+    :return: the id of the new user
+    """
+    dic_user = data_mongo()
+    new_id = 0
+    for key, value in dic_user.items():
+        if value[0] >= new_id:
+            new_id = value[0] + 1
+    return new_id
+
+
+def change_password_user(user, password):
+    """
+    change the password of the user into the database
+    :param user: the username that we delete from the databse
+    :param password: the new password introduce by the user
+    :return: /
+    """
+    dic_user = data_mongo()
+    new_user_data = {}
+    for key, values in dic_user.items():
+        if dic_user[key][1] == user:
+            id = dic_user[key][0]
+            username = dic_user[key][1]
+            email = dic_user[key][2]
+            secret_choice = dic_user[key][4]
+            secret_answer = dic_user[key][5]
+            collection.delete_one({"_id": id})
+            new_password = hashed_password(password)
+            new_id = defined_id_user()
+            new_user_data = {"_id": new_id, "username": username, "email": email, "password": new_password,
+                             "secret_choice": secret_choice, "secret_answer": secret_answer, "role": []}
+    collection.insert_one(new_user_data)
+
+
+
+
 def create_data_to_db(username, email, password, choise_question, answer_secret_question):
     """
     encode the user's datas into the databse
@@ -102,10 +164,9 @@ def create_data_to_db(username, email, password, choise_question, answer_secret_
     :param answer_secret_question: answer from the user
     :return: /
     """
-    dic_user = data_mongo()
-    id = number_user(dic_user)
+    role = []
+    id = defined_id_user()
     data = {"_id": id, "username": username, "email": email,
-            "password": password, "secret_choice": choise_question,
-            "secret_answer": answer_secret_question}
+            "password": hashed_password(password), "secret_choice": choise_question,
+            "secret_answer": hashed_password(answer_secret_question), "role": role}
     collection.insert_one(data)
-
