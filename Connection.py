@@ -6,6 +6,7 @@ cluster = MongoClient(
 db = cluster.testdb
 collection = db.testcollection
 
+
 class Connection:
     def __init__(self, username, password):
         self.username = username
@@ -36,14 +37,13 @@ class Connection:
             for i in data:
                 for key, value in i.items():
                     user_data[key] = value
-            return user_data
+            return True, user_data
         else:
             return False
 
     @property
-    def check_user_data(self):
+    def check_password(self):
         dic_data = self.get_user_data_from_db
         password_register_in_database = dic_data["password"]
         password_crypted = bytes(self.__password, encoding="utf-8")
         return bcrypt.checkpw(password_crypted, password_register_in_database)
-

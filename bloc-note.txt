@@ -1,0 +1,90 @@
+Il reste a faire:
+lier les pages
+supprimer les roles inexistants lors de la modification pour un user + manage_roles problèmes
+
+
+
+
+importer les différents
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----- Pour introduire des users dans la base de données ------
+
+
+# user1 = {"_id": 0, "username": "Cargan", "first_name": "Logan", "last_name": "Carlier", "email": "lgc.carlier@gmail.com", "password": lolo123", "password_confirmation": "lolo123"}
+# user2 = {"_id": 1, "username": "Zink", "first_name": "Mallory", "last_name": "Carlier", "email": "cmallou2002@gmail.com", "password": "mallo456", "password_confirmation": "mallo456"}
+#collection.insert_one({"_id": 0, "username": "admin", "email": "admin", "password": "admin", "password_confirmation": "admin", "choice_question": "admin", "answer_secret_question":"admin"})
+# collection.insert_one(user1)
+# collection.insert_one(user2)
+
+# results = collection.find({"username": "Cargan"})
+# for result in results:
+#     print(result["username"])
+
+----------------------------------------------------------------------
+
+# def create_insertion():
+#     username = self.username_input.text
+#     dic_user = data_mongo()
+#     email = self.email_input.text
+#     print(dic_user[username][4])
+#
+#     if username in dic_user:
+#
+#
+# print("this username is already taken")
+# if dic_user[username][4] == email:
+#     print("this email is already register")
+# else:
+#     password = self.password_input.text
+#     password_confirmed = self.password_confirm_input.text
+#     if password != password_confirmed:
+#         print("The password is not the same")
+#     else:
+#         first_name = self.first_name_input.text
+#         last_name = self.last_name_input.text
+#         # create_insertion(username, first_name, last_name, email, password, password_confirmed)
+# else:
+# print("this email address is already register")
+
+# if __name__ == "main":
+#     print(data_mongo())
+
+
+
+def email_already_know(email):
+    """
+    :param email: receive a email from the  new user
+    :return: True if this email is available
+    """
+    dic_user = data_mongo()
+    available = True
+    good_number_at = True
+    number_at = 0
+    len_email = len(email)
+    for key, value in dic_user.items():
+        if dic_user[key][4] == email:
+            available = False
+        else:
+            pass
+    for i in range(0, len_email):
+        print(email[i])
+        if email[i] == "@":
+            print("true")
+            number_at += 1
+    if number_at != 1:
+        good_number_at = False
+    return available and good_number_at
