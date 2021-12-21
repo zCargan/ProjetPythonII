@@ -25,9 +25,9 @@ class ManageRole:
 
     def show_status_user(self, user):
         self.user = user
-        user_dic = collection.find({"username": self.user})["role"]
+        user_dic = collection.find({"username": self.user})
         for i in user_dic:
-            return "The role of " + str(self.user) + " is " + str(i[self.role])
+            return "The role of " + str(self.user) + " is " + str(i["role"])
 
     def manage_role(self, role, option, new_permission):
         self.role = role
@@ -53,4 +53,4 @@ class ManageRole:
                     return True
 
 a = ManageRole("Zink")
-a.show_status_user("Bedus")
+print(a.show_status_user("Bedus"))
