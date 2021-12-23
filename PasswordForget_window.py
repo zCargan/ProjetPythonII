@@ -30,7 +30,7 @@ class BoxPasswordForgot(BoxLayout):
 
     def label_title(self):
         self.title = Label(text="Password forget?", size_hint=(.2, .1), pos_hint={'x': 0.4},
-                           color=[0.59, 0.239, 0.89, 1], font_size=40)
+                           color=[1, 0.49, 0, 1], font_size=40)
         self.add_widget(self.title)
 
     # ----------------------------------------------------------- Username -----------------------------------------------------------#
@@ -47,7 +47,7 @@ class BoxPasswordForgot(BoxLayout):
     def button_search_question(self):
         self.button_load_question = Button(text="Search user", size_hint=(.24, .05),
                                            pos_hint={'x': 0.38}, color=[1, 1, 1, 1],
-                                           background_color=[0.59, 0.239, 0.89, 1])
+                                           background_color=[1, 0.49, 0, 1])
         self.button_load_question.bind(on_press=self.search_and_load)
         self.add_widget(self.button_load_question)
 
@@ -55,7 +55,7 @@ class BoxPasswordForgot(BoxLayout):
 
     def label_question(self):
         self.secret_question = Label(text='This is your secret question', size_hint=(0.24, 0.05),
-                                     pos_hint={'x': 0.38, 'y': 0.1}, color=[0.59, 0.239, 0.89, 1], font_size=20)
+                                     pos_hint={'x': 0.38, 'y': 0.1}, color=[1, 0.49, 0, 1], font_size=20)
         self.add_widget(self.secret_question)
 
     # ----------------------------------------------------------- secret response -----------------------------------------------------------#
@@ -82,7 +82,7 @@ class BoxPasswordForgot(BoxLayout):
     def change_password_button(self):
         self.button_new_password = Button(text="change my password", size_hint=(.24, .06),
                                           pos_hint={'x': 0.38}, color=[1, 1, 1, 1],
-                                          background_color=[0.59, 0.239, 0.89, 1])
+                                          background_color=[1, 0.49, 0, 1])
         self.button_new_password.bind(on_press=self.check_user_informations)
         self.add_widget(self.button_new_password)
 
